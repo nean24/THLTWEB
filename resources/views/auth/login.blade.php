@@ -1,44 +1,30 @@
 @extends('layouts.app')
-
-@section('title', 'Đăng nhập')
+@section('title','Đăng nhập')
 
 @section('content')
-<div class="bg-white shadow-md rounded-xl p-6 max-w-sm mx-auto space-y-4 border border-[#f2dfe6]">
+<div class="space-y-6 max-w-md mx-auto">
 
-    <h1 class="text-center text-xl font-semibold text-[#d36c9d]">Chào mừng 🌸</h1>
+  <h1 class="text-xl font-semibold text-[#54434f]">Đăng nhập 🌷</h1>
 
-        <input id="email" class="w-full p-2 border border-[#f2dfe6] rounded bg-[#fffafb]" placeholder="Email">
-            <input id="password" type="password" class="w-full p-2 border border-[#f2dfe6] rounded bg-[#fffafb]" placeholder="Mật khẩu">
+  <label class="block text-sm text-[#6f5b69]">Email</label>
+  <input id="login_email" type="email"
+         class="w-full p-3 rounded-xl border border-[#f3dde9] bg-[#fffafb] focus:ring-2 focus:ring-[#f3c8df]"
+         placeholder="vd: user@example.com">
 
-                <button id="loginBtn" class="w-full py-2 bg-[#f6dce8] hover:bg-[#f3cadf] text-[#4b3b47] rounded transition">
-                        Đăng nhập
-                            </button>
+  <label class="block text-sm text-[#6f5b69] mt-2">Mật khẩu</label>
+  <input id="login_password" type="password"
+         class="w-full p-3 rounded-xl border border-[#f3dde9] bg-[#fffafb] focus:ring-2 focus:ring-[#f3c8df]"
+         placeholder="••••••••">
 
-                                <button id="signupBtn" class="w-full py-2 border border-[#f2dfe6] rounded bg-white hover:bg-[#fffafb] transition">
-                                        Tạo tài khoản mới
-                                            </button>
+  <button id="loginBtn"
+          class="w-full py-3 rounded-xl bg-[#f6d4e5] hover:bg-[#f2bfd7] text-[#4b3b47] transition">
+    Đăng nhập
+  </button>
 
-                                            </div>
+  <p class="text-sm text-center text-[#a88a99]">
+    Chưa có tài khoản?
+    <a href="{{ route('register') }}" class="text-[#d36c9d] underline">Đăng ký</a>
+  </p>
 
-                                            <script type="module">
-                                            import { supabase } from '/resources/js/supabase.js'
-
-                                            loginBtn.onclick = async () => {
-                                              const { error } = await supabase.auth.signInWithPassword({
-                                                  email: email.value,
-                                                      password: password.value
-                                                        })
-                                                          if (error) return alert(error.message)
-                                                            location.href = "/profile"
-                                                            }
-
-                                                            signupBtn.onclick = async () => {
-                                                              const { error } = await supabase.auth.signUp({
-                                                                  email: email.value,
-                                                                      password: password.value
-                                                                        })
-                                                                          if (error) return alert(error.message)
-                                                                            alert("Kiểm tra email để kích hoạt ✨")
-                                                                            }
-                                                                            </script>
-                                                                            @endsection
+</div>
+@endsection

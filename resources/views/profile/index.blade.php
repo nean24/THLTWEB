@@ -1,52 +1,25 @@
 @extends('layouts.app')
-
-@section('title', 'Hồ sơ')
+@section('title','Hồ sơ')
 
 @section('content')
-<div class="bg-white shadow-md rounded-xl p-6 max-w-md mx-auto space-y-4 border border-[#f2dfe6]">
+<div class="space-y-6">
 
-    <div class="text-center">
-            <img id="avatar" class="w-24 h-24 rounded-full mx-auto border border-[#f2dfe6] object-cover" src="https://placekitten.com/200/200">
-                    <p class="mt-2 text-sm text-[#d36c9d]">Hồ sơ của bạn</p>
-                        </div>
+  <div class="flex items-center gap-4">
+    <img id="profileAvatar" class="w-16 h-16 rounded-full border border-[#f2dfe6]"
+         src="{{ asset('images/default-avatar.webp') }}" alt="avatar">
+    <div>
+      <h2 id="profileUsername" class="text-lg font-semibold text-[#4b3b47]">...</h2>
+      <p id="profileBio" class="text-sm text-[#a88a99]">...</p>
+    </div>
+  </div>
 
-                            <div>
-                                    <label class="text-xs text-[#a88a99]">Tên hiển thị</label>
-                                            <input id="display_name" class="w-full p-2 border border-[#f2dfe6] rounded bg-[#fffafb]">
-                                                </div>
+  <div class="grid grid-cols-2 gap-3 text-sm text-[#6f5b69]">
+    <div><span class="opacity-70">Website:</span> <span id="profileWebsite">—</span></div>
+    <div><span class="opacity-70">Location:</span> <span id="profileLocation">—</span></div>
+  </div>
 
-                                                    <div>
-                                                            <label class="text-xs text-[#a88a99]">Giới thiệu</label>
-                                                                    <textarea id="bio" class="w-full p-2 border border-[#f2dfe6] rounded bg-[#fffafb]"></textarea>
-                                                                        </div>
+  <h3 class="text-sm font-semibold text-[#a88a99]">Bài viết của bạn</h3>
+  <div id="myPosts" class="space-y-3"></div>
 
-                                                                            <button id="saveBtn" class="w-full py-2 bg-[#f6dce8] hover:bg-[#f3cadf] text-[#4b3b47] rounded transition">
-                                                                                    Lưu thay đổi 💗
-                                                                                        </button>
-                                                                                        </div>
-
-                                                                                        <script type="module">
-                                                                                        import { supabase } from '/resources/js/supabase.js'
-
-                                                                                        const { data: { user } } = await supabase.auth.getUser()
-                                                                                        if (!user) location.href = "/"
-
-                                                                                        const { data: profile } = await supabase
-                                                                                          .from('profiles')
-                                                                                            .select('*')
-                                                                                              .eq('id', user.id)
-                                                                                                .single()
-
-                                                                                                display_name.value = profile.display_name ?? ''
-                                                                                                bio.value = profile.bio ?? ''
-                                                                                                avatar.src = profile.avatar_url ?? "https://placekitten.com/200/200"
-
-                                                                                                saveBtn.onclick = async () => {
-                                                                                                  await supabase
-                                                                                                      .from('profiles')
-                                                                                                          .update({ display_name: display_name.value, bio: bio.value })
-                                                                                                              .eq('id', user.id)
-                                                                                                                alert("Đã lưu ✨")
-                                                                                                                }
-                                                                                                                </script>
-                                                                                                                @endsection
+</div>
+@endsection
