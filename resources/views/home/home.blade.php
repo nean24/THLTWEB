@@ -14,7 +14,7 @@
           class="form-input bg-background text-surface focus:outline-none focus:ring-2 focus:ring-button-primary placeholder-surface/60"
           placeholder="Bạn đang nghĩ gì?"></textarea>
         <div class="flex items-center justify-between mt-1 text-xs text-surface/80">
-          <span id="loginHint" class="hidden">
+          <span id="loginHint" class="text-black hidden">
             Bạn chưa đăng nhập. <a href="{{ route('login') }}" class="link-primary">Đăng nhập</a> để đăng bài.
           </span>
           <span id="charCount">0/500</span>
