@@ -10,10 +10,10 @@
       <!-- Avatar Section -->
       <div class="flex flex-col items-center gap-3">
         <div class="relative">
-          <img id="profileAvatar" class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-misty-lavender object-cover"
+          <img id="profileAvatar" class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-default object-cover"
                src="{{ asset('images/default-avatar.webp') }}" alt="avatar">
-          <div class="absolute -bottom-2 -right-2 w-8 h-8 bg-pistachio-pastel rounded-full flex items-center justify-center border-4 border-warm-beige">
-            <svg class="w-4 h-4 text-deep-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="absolute -bottom-2 -right-2 w-8 h-8 bg-button-primary rounded-full flex items-center justify-center border-4 border-surface">
+            <svg class="w-4 h-4 text-surface" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
             </svg>
           </div>
@@ -23,7 +23,7 @@
       <!-- Profile Info -->
       <div class="flex-1 text-center md:text-left space-y-3">
         <div class="flex flex-col md:flex-row md:items-center gap-3">
-          <h1 id="profileUsername" class="text-2xl md:text-3xl font-bold text-deep-navy">...</h1>
+          <h1 id="profileUsername" class="text-2xl md:text-3xl font-bold text-background">...</h1>
           <button id="editProfileBtn" class="btn btn-primary">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
@@ -32,18 +32,18 @@
           </button>
         </div>
 
-        <p id="profileBio" class="text-navy-light text-lg leading-relaxed max-w-2xl">...</p>
+        <p id="profileBio" class="text-muted text-lg leading-relaxed max-w-2xl">...</p>
 
         <!-- Profile Stats -->
-        <div class="flex flex-wrap gap-6 text-sm text-navy-light pt-2">
+        <div class="flex flex-wrap gap-6 text-sm text-muted pt-2">
           <div class="flex items-center gap-2">
-            <svg class="w-4 h-4 text-pistachio-pastel" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-button-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
             </svg>
             <span><strong id="postsCount">0</strong> bài viết</span>
           </div>
           <div class="flex items-center gap-2">
-            <svg class="w-4 h-4 text-pistachio-pastel" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-button-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
             </svg>
             <span><strong id="likesGivenCount">0</strong> lượt thích</span>
@@ -103,9 +103,9 @@
     <div class="p-6">
       <!-- Modal Header -->
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-xl font-bold text-deep-navy">Chỉnh sửa hồ sơ</h2>
-        <button id="closeModalBtn" class="p-2 hover:bg-soft-sky-blue/20 rounded-full transition-colors">
-          <svg class="w-5 h-5 text-navy-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <h2 class="text-xl font-bold text-background">Chỉnh sửa hồ sơ</h2>
+        <button id="closeModalBtn" class="p-2 hover:bg-surface-hover/20 rounded-full transition-colors">
+          <svg class="w-5 h-5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
         </button>

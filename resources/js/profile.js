@@ -100,12 +100,12 @@ async function loadMyPosts(user) {
 
   if (error) {
     console.error('Error loading my posts:', error)
-    container.innerHTML = '<p class="text-navy-light text-center py-8">Không thể tải bài viết</p>'
+    container.innerHTML = '<p class="text-muted text-center py-8">Không thể tải bài viết</p>'
     return
   }
 
   if (!posts || posts.length === 0) {
-    container.innerHTML = '<p class="text-navy-light text-center py-8">Bạn chưa có bài viết nào 📝</p>'
+    container.innerHTML = '<p class="text-muted text-center py-8">Bạn chưa có bài viết nào 📝</p>'
     return
   }
 
@@ -142,7 +142,7 @@ async function loadLikedPosts(user) {
   if (!container) return
 
   // Show loading state
-  container.innerHTML = '<p class="text-navy-light text-center py-8 loading">Đang tải...</p>'
+  container.innerHTML = '<p class="text-muted text-center py-8 loading">Đang tải...</p>'
 
   const { data: likedPosts, error } = await supabase
     .from('likes')
@@ -159,12 +159,12 @@ async function loadLikedPosts(user) {
 
   if (error) {
     console.error('Error loading liked posts:', error)
-    container.innerHTML = '<p class="text-navy-light text-center py-8">Không thể tải bài viết đã thích</p>'
+    container.innerHTML = '<p class="text-muted text-center py-8">Không thể tải bài viết đã thích</p>'
     return
   }
 
   if (!likedPosts || likedPosts.length === 0) {
-    container.innerHTML = '<p class="text-navy-light text-center py-8">Bạn chưa thích bài viết nào 💕</p>'
+    container.innerHTML = '<p class="text-muted text-center py-8">Bạn chưa thích bài viết nào 💕</p>'
     return
   }
 
