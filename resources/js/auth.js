@@ -31,7 +31,7 @@ export function initLogin() {
   const btn = document.getElementById('loginBtn')
   if (!btn) return
 
-  btn.onclick = async () => {
+  const handleLogin = async () => {
     const email = document.getElementById('login_email').value.trim()
     const password = document.getElementById('login_password').value.trim()
 
@@ -49,13 +49,45 @@ export function initLogin() {
     toast.success("Đăng nhập thành công! 🌸")
     location.href = '/'
   }
+
+  // Click handler
+  btn.onclick = handleLogin
+
+  // Enter key handlers
+  const emailInput = document.getElementById('login_email')
+  const passwordInput = document.getElementById('login_password')
+  const confirmPasswordInput = document.getElementById('confirm_password')
+
+  if (emailInput) {
+    emailInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        handleLogin()
+      }
+    })
+  }
+
+  if (passwordInput) {
+    passwordInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        handleLogin()
+      }
+    })
+  }
+
+  if (confirmPasswordInput) {
+    confirmPasswordInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        handleLogin()
+      }
+    })
+  }
 }
 
 export function initRegister() {
   const btn = document.getElementById('registerBtn')
   if (!btn) return
 
-  btn.onclick = async () => {
+  const handleRegister = async () => {
     const email = document.getElementById('reg_email').value.trim()
     const password = document.getElementById('reg_password').value.trim()
     const confirmPassword = document.getElementById('reg_confirm_password').value.trim()
@@ -77,5 +109,37 @@ export function initRegister() {
 
     toast.success("Đăng ký thành công 🎉")
     location.href = '/login'
+  }
+
+  // Click handler
+  btn.onclick = handleRegister
+
+  // Enter key handlers
+  const emailInput = document.getElementById('reg_email')
+  const passwordInput = document.getElementById('reg_password')
+  const confirmPasswordInput = document.getElementById('reg_confirm_password')
+
+  if (emailInput) {
+    emailInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        handleRegister()
+      }
+    })
+  }
+
+  if (passwordInput) {
+    passwordInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        handleRegister()
+      }
+    })
+  }
+
+  if (confirmPasswordInput) {
+    confirmPasswordInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        handleRegister()
+      }
+    })
   }
 }
