@@ -12,7 +12,7 @@
       <div class="flex-1">
         <textarea id="composer" rows="3" maxlength="500"
           class="w-full p-3 rounded-xl border border-[#f3dde9] bg-[#fff7fb] focus:outline-none focus:ring-2 focus:ring-[#f3c8df]"
-          placeholder="Bạn đang nghĩ gì? 🌸"></textarea>
+          placeholder="Bạn đang nghĩ gì?"></textarea>
         <div class="flex items-center justify-between mt-1 text-xs text-[#a88a99]">
           <span id="loginHint" class="hidden">
             Bạn chưa đăng nhập. <a href="{{ route('login') }}" class="text-[#d36c9d] underline">Đăng nhập</a> để đăng bài.

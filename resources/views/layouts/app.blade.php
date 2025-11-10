@@ -11,7 +11,7 @@
   <header class="px-6 py-3 border-b border-[#f2dfe6] bg-white/80 backdrop-blur-md shadow-sm">
     <div class="max-w-3xl mx-auto flex items-center justify-between">
       <a href="{{ route('home') }}" class="font-semibold text-lg tracking-wide text-[#d36c9d] hover:opacity-90">
-        🌸 CONVEY
+        CONVEY
       </a>
       <nav class="flex gap-6 items-center text-[#6f5b69]">
         <a id="profileLink" href="{{ route('profile') }}" class="hidden hover:text-[#d36c9d] transition p-2 rounded-lg hover:bg-[#f9f0f4]" title="Profile">
