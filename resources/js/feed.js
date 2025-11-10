@@ -19,16 +19,16 @@ function esc(str) {
 --------------------------------*/
 export function renderPost(post) {
   return `
-  <article class="bg-white/95 border border-[#f3deea] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+  <article class="post p-5 shadow-sm hover:shadow-md transition-shadow">
     <!-- Header với avatar và thông tin user -->
     <div class="flex items-center gap-3">
-      <img class="w-10 h-10 rounded-full border border-[#f2dfe6] shadow-sm"
+      <img class="w-10 h-10 rounded-full border border-misty-lavender shadow-sm"
            src="${post.profiles?.avatar_url || '/images/default-avatar.webp'}">
       <div class="flex flex-col">
-        <span class="text-sm font-semibold text-[#4b3b47]">
+        <span class="text-sm font-semibold text-deep-navy">
           ${post.profiles?.display_name || post.profiles?.username || "user"}
         </span>
-        <span class="text-xs text-[#a88a99]">
+        <span class="text-xs text-navy-light">
           ${new Date(post.created_at).toLocaleString('vi-VN', {
             year: 'numeric', month: 'short', day: 'numeric',
             hour: '2-digit', minute: '2-digit'
@@ -38,7 +38,7 @@ export function renderPost(post) {
     </div>
 
     <!-- Nội dung bài viết -->
-    <p class="text-[#4b3b47] whitespace-pre-line text-sm leading-relaxed mb-2">
+    <p class="text-deep-navy whitespace-pre-line text-sm leading-relaxed mb-2">
       ${esc(post.content)}
     </p>
 
@@ -46,13 +46,13 @@ export function renderPost(post) {
     <!-- Action buttons -->
     <div class="flex items-center px-1">
       <div class="flex items-center gap-6">
-        <button class="like-btn hover:text-[#d36c9d] transition-colors flex items-center gap-2 text-sm text-[#a88a99] hover:bg-[#f9f0f4] px-3 py-2 rounded-lg" data-post-id="${post.id}">
+        <button class="like-btn hover:text-pistachio-hover transition-colors flex items-center gap-2 text-sm text-navy-light hover:bg-lavender-light px-3 py-2 rounded-lg" data-post-id="${post.id}">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
           </svg>
           <span class="like-count font-medium">${post.likes_count || 0}</span>
         </button>
-        <a href="/post/${post.id}" class="hover:text-[#d36c9d] transition-colors flex items-center gap-2 text-sm text-[#a88a99] hover:bg-[#f9f0f4] px-3 py-2 rounded-lg">
+        <a href="/post/${post.id}" class="hover:text-pistachio-hover transition-colors flex items-center gap-2 text-sm text-navy-light hover:bg-lavender-light px-3 py-2 rounded-lg">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
           </svg>

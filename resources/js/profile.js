@@ -100,12 +100,12 @@ async function loadMyPosts(user) {
 
   if (error) {
     console.error('Error loading my posts:', error)
-    container.innerHTML = '<p class="text-[#a88a99] text-center py-8">Không thể tải bài viết</p>'
+    container.innerHTML = '<p class="text-navy-light text-center py-8">Không thể tải bài viết</p>'
     return
   }
 
   if (!posts || posts.length === 0) {
-    container.innerHTML = '<p class="text-[#a88a99] text-center py-8">Bạn chưa có bài viết nào 📝</p>'
+    container.innerHTML = '<p class="text-navy-light text-center py-8">Bạn chưa có bài viết nào 📝</p>'
     return
   }
 
@@ -142,7 +142,7 @@ async function loadLikedPosts(user) {
   if (!container) return
 
   // Show loading state
-  container.innerHTML = '<p class="text-[#a88a99] text-center py-8 loading">Đang tải...</p>'
+  container.innerHTML = '<p class="text-navy-light text-center py-8 loading">Đang tải...</p>'
 
   const { data: likedPosts, error } = await supabase
     .from('likes')
@@ -159,12 +159,12 @@ async function loadLikedPosts(user) {
 
   if (error) {
     console.error('Error loading liked posts:', error)
-    container.innerHTML = '<p class="text-[#a88a99] text-center py-8">Không thể tải bài viết đã thích</p>'
+    container.innerHTML = '<p class="text-navy-light text-center py-8">Không thể tải bài viết đã thích</p>'
     return
   }
 
   if (!likedPosts || likedPosts.length === 0) {
-    container.innerHTML = '<p class="text-[#a88a99] text-center py-8">Bạn chưa thích bài viết nào 💕</p>'
+    container.innerHTML = '<p class="text-navy-light text-center py-8">Bạn chưa thích bài viết nào 💕</p>'
     return
   }
 
@@ -216,10 +216,10 @@ function initTabSwitching() {
 
   myPostsTab.addEventListener('click', () => {
     // Update tab styles
-    myPostsTab.classList.add('active', 'border-[#d36c9d]', 'text-[#4b3b47]')
-    myPostsTab.classList.remove('border-transparent', 'text-[#a88a99]')
-    likedPostsTab.classList.remove('active', 'border-[#d36c9d]', 'text-[#4b3b47]')
-    likedPostsTab.classList.add('border-transparent', 'text-[#a88a99]')
+    myPostsTab.classList.add('tab-active')
+    myPostsTab.classList.remove('tab-inactive')
+    likedPostsTab.classList.remove('tab-active')
+    likedPostsTab.classList.add('tab-inactive')
 
     // Update content visibility
     myPostsContent.classList.remove('hidden')
@@ -228,10 +228,10 @@ function initTabSwitching() {
 
   likedPostsTab.addEventListener('click', async () => {
     // Update tab styles
-    likedPostsTab.classList.add('active', 'border-[#d36c9d]', 'text-[#4b3b47]')
-    likedPostsTab.classList.remove('border-transparent', 'text-[#a88a99]')
-    myPostsTab.classList.remove('active', 'border-[#d36c9d]', 'text-[#4b3b47]')
-    myPostsTab.classList.add('border-transparent', 'text-[#a88a99]')
+    likedPostsTab.classList.add('tab-active')
+    likedPostsTab.classList.remove('tab-inactive')
+    myPostsTab.classList.remove('tab-active')
+    myPostsTab.classList.add('tab-inactive')
 
     // Update content visibility
     likedPostsContent.classList.remove('hidden')
