@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Bảng tin 🌸')
+@section('title','Bảng tin')
 
 @section('content')
 <div class="space-y-4">
@@ -23,7 +23,7 @@
     </div>
     <div class="flex justify-end">
       <button id="postBtn" class="btn btn-primary">
-        Đăng 🌷
+        Đăng
       </button>
     </div>
   </section>

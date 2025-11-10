@@ -25,7 +25,7 @@ export function renderPost(post) {
       <img class="w-10 h-10 rounded-full border border-default shadow-sm"
            src="${post.profiles?.avatar_url || '/images/default-avatar.webp'}">
       <div class="flex flex-col">
-        <span class="text-sm font-semibold text-background">
+        <span class="text-sm font-semibold text-black">
           ${post.profiles?.display_name || post.profiles?.username || "user"}
         </span>
         <span class="text-xs text-muted">
@@ -38,7 +38,7 @@ export function renderPost(post) {
     </div>
 
     <!-- Nội dung bài viết -->
-    <p class="text-background whitespace-pre-line text-sm leading-relaxed mb-2">
+    <p class="text-black whitespace-pre-line text-sm leading-relaxed mb-2">
       ${esc(post.content)}
     </p>
 

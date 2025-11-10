@@ -10,7 +10,7 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 
     /* Black and White Minimal Color Palette */
-    --color-background: #000000;           /* Main background - black */
+    --color-background: #FFFFFF;           /* Main background - black */
     --color-surface: #FFFFFF;              /* Surface/card background - white */
     --color-surface-light: #F8F9FA;        /* Light surface - light gray */
     --color-button-primary: #6B7280;       /* Primary buttons - medium gray */
@@ -312,7 +312,7 @@
 
 .post-composer {
     background: var(--color-surface);
-    border: 2px solid var(--color-button-primary);
+    border: 2px solid var(--color-border);
     border-radius: 20px;
 }
 
