@@ -56,28 +56,24 @@ export function initRegister() {
   if (!btn) return
 
   btn.onclick = async () => {
-    const username = document.getElementById('reg_username').value.trim()
     const email = document.getElementById('reg_email').value.trim()
     const password = document.getElementById('reg_password').value.trim()
+    const confirmPassword = document.getElementById('reg_confirm_password').value.trim()
 
-    if (!username || !email || !password) {
+    if (!email || !password || !confirmPassword) {
       return toast.warning("Vui lòng nhập đầy đủ thông tin 📝")
+    }
+
+    if (password !== confirmPassword) {
+      return toast.warning("Mật khẩu và xác nhận mật khẩu không khớp 🌧")
     }
 
     const { data, error } = await supabase.auth.signUp({
       email,
-      password,
-      options: { data: { username } }
+      password
     })
 
     if (error) return toast.error(error.message)
-
-    await supabase.from('profiles').insert({
-      id: data.user.id,
-      username,
-      display_name: username,
-      email
-    })
 
     toast.success("Đăng ký thành công 🎉")
     location.href = '/login'
