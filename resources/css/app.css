@@ -9,3 +9,126 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Profile page tabs */
+.tab-button {
+    transition: all 0.2s ease-in-out;
+}
+
+.tab-content {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Modal animations */
+.modal-backdrop {
+    animation: fadeInBackdrop 0.2s ease-out;
+}
+
+.modal-content {
+    animation: slideInModal 0.3s ease-out;
+}
+
+@keyframes fadeInBackdrop {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes slideInModal {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Profile hover effects */
+.profile-avatar-container:hover .edit-icon {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.edit-icon {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Enhanced button styles */
+.btn-primary {
+    background: linear-gradient(135deg, #d36c9d 0%, #b8588a 100%);
+    box-shadow: 0 4px 15px rgba(211, 108, 157, 0.2);
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(211, 108, 157, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Form input enhancements */
+.form-input:focus {
+    box-shadow: 0 0 0 3px rgba(211, 108, 157, 0.1);
+}
+
+/* Card hover effects */
+.profile-card {
+    transition: all 0.2s ease-in-out;
+}
+
+.profile-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading states */
+.loading {
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid #d36c9d;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: translateY(-50%) rotate(0deg);
+    }
+    100% {
+        transform: translateY(-50%) rotate(360deg);
+    }
+}
