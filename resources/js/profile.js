@@ -43,8 +43,11 @@ async function loadProfileData(user) {
   currentProfile = profile
 
   // Update profile UI
-  document.getElementById('profileUsername').textContent =
+  document.getElementById('profileDisplayName').textContent =
     profile?.display_name || profile?.username || 'Người dùng'
+
+  document.getElementById('profileUsername').textContent =
+    profile?.username ? `@${profile.username}` : '@...'
 
   document.getElementById('profileAvatar').src =
     profile?.avatar_url || "/images/default-avatar.webp"
@@ -324,8 +327,6 @@ function openEditProfileModal() {
   document.getElementById('editDisplayName').value = currentProfile.display_name || ''
   document.getElementById('editUsername').value = currentProfile.username || ''
   document.getElementById('editBio').value = currentProfile.bio || ''
-  document.getElementById('editWebsite').value = currentProfile.website || ''
-  document.getElementById('editLocation').value = currentProfile.location || ''
   document.getElementById('editAvatarUrl').value = currentProfile.avatar_url || ''
 
   // Show modal with animation
@@ -357,8 +358,6 @@ async function saveProfileChanges() {
     display_name: document.getElementById('editDisplayName').value.trim() || null,
     username: username,
     bio: document.getElementById('editBio').value.trim() || null,
-    website: document.getElementById('editWebsite').value.trim() || null,
-    location: document.getElementById('editLocation').value.trim() || null,
     avatar_url: document.getElementById('editAvatarUrl').value.trim() || null
   }
 
