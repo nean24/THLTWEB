@@ -8,6 +8,21 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* New Soft Pastel Color Palette */
+    --color-cloud-white: #F8F9FA;
+    --color-warm-beige: #E6DEC7;
+    --color-pistachio-pastel: #CDE8C5;
+    --color-soft-sky-blue: #BFD8FF;
+    --color-misty-lavender: #D2D1F0;
+    --color-charcoal-grey: #3A3A3C;
+
+    /* Color variants for different opacity levels */
+    --color-pistachio-hover: #B8D9AF;
+    --color-sky-blue-hover: #A8C8EF;
+    --color-lavender-light: #E2E1F5;
+    --color-charcoal-light: #5A5A5C;
+    --color-beige-light: #F0E9D2;
 }
 
 /* Profile page tabs */
@@ -80,29 +95,35 @@
 
 /* Enhanced button styles */
 .btn-primary {
-    background: linear-gradient(135deg, #d36c9d 0%, #b8588a 100%);
-    box-shadow: 0 4px 15px rgba(211, 108, 157, 0.2);
+    background: var(--color-pistachio-pastel);
+    color: var(--color-charcoal-grey);
+    box-shadow: 0 4px 15px rgba(205, 232, 197, 0.3);
     transition: all 0.2s ease-in-out;
+    border: 1px solid rgba(205, 232, 197, 0.5);
 }
 
 .btn-primary:hover {
-    box-shadow: 0 6px 20px rgba(211, 108, 157, 0.3);
+    background: var(--color-pistachio-hover);
+    box-shadow: 0 6px 20px rgba(205, 232, 197, 0.4);
     transform: translateY(-1px);
 }
 
 /* Form input enhancements */
 .form-input:focus {
-    box-shadow: 0 0 0 3px rgba(211, 108, 157, 0.1);
+    box-shadow: 0 0 0 3px rgba(191, 216, 255, 0.2);
+    border-color: var(--color-soft-sky-blue);
 }
 
 /* Card hover effects */
 .profile-card {
     transition: all 0.2s ease-in-out;
+    background: var(--color-warm-beige);
+    border-color: var(--color-misty-lavender);
 }
 
 .profile-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 25px rgba(210, 209, 240, 0.3);
 }
 
 /* Loading states */
@@ -118,7 +139,7 @@
     transform: translateY(-50%);
     width: 16px;
     height: 16px;
-    border: 2px solid #d36c9d;
+    border: 2px solid var(--color-pistachio-pastel);
     border-top: 2px solid transparent;
     border-radius: 50%;
     animation: spin 1s linear infinite;
