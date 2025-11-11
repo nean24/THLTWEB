@@ -10,8 +10,8 @@
 
   <header class="px-6 py-3 border-b border-default bg-surface/95 backdrop-blur-md shadow-sm">
     <div class="max-w-3xl mx-auto flex items-center justify-between">
-      <a href="{{ route('home') }}" class="font-semibold text-lg tracking-wide text-black hover:text-muted">
-        CONVEY
+      <a href="{{ route('home') }}" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-8 w-auto">
       </a>
       <nav class="flex gap-6 items-center text-background">
         <a id="profileLink" href="{{ route('profile') }}" class=" text-black hidden hover:text-muted transition p-2 rounded-lg hover:bg-surface-hover/50" title="Profile">
