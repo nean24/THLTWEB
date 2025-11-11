@@ -1,5 +1,6 @@
 import { supabase } from './supabase.js'
 import { renderPost } from './feed.js'
+import { toast } from './toast.js'
 
 const $ = sel => document.querySelector(sel)
 
@@ -170,6 +171,7 @@ export async function initCommentComposer() {
 
     if (!text) {
       console.log('Empty comment, aborting')
+      toast.warning("Vui lòng nhập nội dung bình luận 📝")
       return
     }
 
@@ -179,11 +181,20 @@ export async function initCommentComposer() {
 
     if (!user) {
       console.log('No user found, redirecting to login')
-      return location.href = "/login"
+      toast.warning("Vui lòng đăng nhập để bình luận 🔐")
+      setTimeout(() => {
+        location.href = "/login"
+      }, 1500)
+      return
     }
 
     const postId = window.location.pathname.split('/').pop()
     console.log('Post ID:', postId)
+
+    // Disable button and show loading state
+    btn.disabled = true
+    const originalText = btn.textContent
+    btn.textContent = 'Đang gửi...'
 
     console.log('Inserting comment...')
     const { data, error } = await supabase.from('comments').insert([{
@@ -192,13 +203,19 @@ export async function initCommentComposer() {
       content: text
     }])
 
+    // Re-enable button
+    btn.disabled = false
+    btn.textContent = originalText
+
     if (error) {
       console.error('Error posting comment:', error)
+      toast.error("Có lỗi khi gửi bình luận. Vui lòng thử lại! 🌧")
       return
     }
 
     console.log('Comment posted successfully:', data)
     input.value = ''
+    toast.success("Gửi bình luận thành công! 💬")
     loadComments()
   }
 

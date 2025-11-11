@@ -1,9 +1,6 @@
 import { supabase } from './supabase.js'
 import { toast } from './toast.js'
 
-/*--------------------------------
-  Escape text tránh XSS đơn giản
---------------------------------*/
 function esc(str) {
   return str?.replace(/[&<>"']/g, m => ({
     "&": "&amp;",
@@ -64,14 +61,11 @@ export function renderPost(post) {
   `
 }
 
-/*--------------------------------
-  Tải danh sách bài viết lên feed
---------------------------------*/
+/*Tải danh sách bài viết lên feed*/
 export async function loadFeed() {
   const container = document.getElementById('posts')
   if (!container) return
 
-  // Get current user to check which posts they've liked
   const { data: { user } } = await supabase.auth.getUser()
 
   const { data, error } = await supabase
@@ -89,7 +83,6 @@ export async function loadFeed() {
     return
   }
 
-  // Add likes count, comments count and user's like status to each post
   const postsWithData = data.map(post => {
     const likes = post.likes || []
     const comments = post.comments || []
@@ -107,7 +100,6 @@ export async function loadFeed() {
 
   container.innerHTML = postsWithData.map(p => renderPost(p)).join('')
 
-  // Update like button styles for posts the user has liked
   if (user) {
     postsWithData.forEach(post => {
       if (post.user_liked) {
@@ -132,7 +124,6 @@ export function initComposer() {
   const loginHint = document.getElementById('loginHint')
   if (!composer || !postBtn) return
 
-  // Kiểm tra người dùng đăng nhập chưa
   supabase.auth.getUser().then(async ({ data }) => {
     const user = data.user
 
@@ -142,17 +133,19 @@ export function initComposer() {
       return
     }
 
-    // Đếm ký tự
     composer.addEventListener('input', () => {
       charCount.textContent = `${composer.value.length}/500`
     })
 
-    // Đăng bài
     postBtn.addEventListener('click', async () => {
       const text = composer.value.trim()
-      if (!text) return
+      if (!text) {
+        toast.warning("Vui lòng nhập nội dung bài viết.")
+        return
+      }
 
       postBtn.disabled = true
+      postBtn.textContent = 'Đang đăng...'
 
       const { error } = await supabase.from('posts').insert([{
         user_id: user.id,
@@ -160,27 +153,27 @@ export function initComposer() {
       }])
 
       postBtn.disabled = false
+      postBtn.textContent = 'Đăng'
 
-      if (!error) {
+      if (error) {
+        console.error('Error posting:', error)
+        toast.error("Có lỗi khi đăng bài. Vui lòng thử lại! 🌧")
+      } else {
         composer.value = ''
         charCount.textContent = '0/500'
+        toast.success("Đăng bài thành công!")
         loadFeed()
       }
     })
   })
 }
 
-/*--------------------------------
-  Init feed: Khởi tạo feed và load dữ liệu
---------------------------------*/
+/*Init feed: Khởi tạo feed và load dữ liệu*/
 export function initFeed() {
   console.log('Initializing feed...')
   loadFeed()
 }
 
-/*--------------------------------
-  Handle like functionality - Complete implementation
---------------------------------*/
 export function initLikeHandlers() {
   document.addEventListener('click', async (e) => {
     if (!e.target.closest('.like-btn')) return
@@ -192,7 +185,6 @@ export function initLikeHandlers() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return location.href = "/login"
 
-    // Check if already liked
     const { data: existingLike } = await supabase
       .from('likes')
       .select('id')
@@ -205,7 +197,7 @@ export function initLikeHandlers() {
     let currentCount = parseInt(countSpan.textContent) || 0
 
     if (existingLike) {
-      // Unlike
+
       await supabase
         .from('likes')
         .delete()
@@ -216,7 +208,6 @@ export function initLikeHandlers() {
       likeBtn.classList.remove('text-red-500')
       countSpan.textContent = Math.max(0, currentCount - 1)
     } else {
-      // Like
       await supabase
         .from('likes')
         .insert({ post_id: postId, user_id: user.id })
