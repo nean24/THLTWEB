@@ -167,7 +167,15 @@ export function initComposer() {
 }
 
 /*--------------------------------
-  Handle like functionality
+  Init feed: Khởi tạo feed và load dữ liệu
+--------------------------------*/
+export function initFeed() {
+  console.log('Initializing feed...')
+  loadFeed()
+}
+
+/*--------------------------------
+  Handle like functionality - Complete implementation
 --------------------------------*/
 export function initLikeHandlers() {
   document.addEventListener('click', async (e) => {
@@ -175,17 +183,12 @@ export function initLikeHandlers() {
 
     const likeBtn = e.target.closest('.like-btn')
     const postId = likeBtn.dataset.postId
-    const likeCount = likeBtn.querySelector('.like-count')
-    const heartIcon = likeBtn.querySelector('svg')
 
-    // Check if user is logged in
+    // Get current user
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      toast.warning('Bạn cần đăng nhập để thích bài viết! 💝')
-      return
-    }
+    if (!user) return location.href = "/login"
 
-    // Check if user already liked this post
+    // Check if already liked
     const { data: existingLike } = await supabase
       .from('likes')
       .select('id')
@@ -193,28 +196,30 @@ export function initLikeHandlers() {
       .eq('user_id', user.id)
       .single()
 
+    const heartIcon = likeBtn.querySelector('svg')
+    const countSpan = likeBtn.querySelector('.like-count')
+    let currentCount = parseInt(countSpan.textContent) || 0
+
     if (existingLike) {
-      // Unlike the post
+      // Unlike
       await supabase
         .from('likes')
         .delete()
         .eq('post_id', postId)
         .eq('user_id', user.id)
 
-      // Update UI
       heartIcon.setAttribute('fill', 'none')
       likeBtn.classList.remove('text-red-500')
-      likeCount.textContent = Math.max(0, parseInt(likeCount.textContent) - 1)
+      countSpan.textContent = Math.max(0, currentCount - 1)
     } else {
-      // Like the post
+      // Like
       await supabase
         .from('likes')
-        .insert([{ post_id: postId, user_id: user.id }])
+        .insert({ post_id: postId, user_id: user.id })
 
-      // Update UI
       heartIcon.setAttribute('fill', 'currentColor')
       likeBtn.classList.add('text-red-500')
-      likeCount.textContent = parseInt(likeCount.textContent) + 1
+      countSpan.textContent = currentCount + 1
     }
   })
 }

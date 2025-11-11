@@ -1,0 +1,216 @@
+import { supabase } from './supabase.js'
+import { renderPost } from './feed.js'
+
+const $ = sel => document.querySelector(sel)
+
+export async function loadPostDetail() {
+  console.log('=== DEBUG: loadPostDetail called ===')
+  console.log('Current URL:', window.location.href)
+  console.log('Pathname:', window.location.pathname)
+
+  const container = $('#postDetail')
+  if (!container) {
+    console.error('Post detail container (#postDetail) not found')
+    return
+  }
+  console.log('Container found:', container)
+
+  const postId = window.location.pathname.split('/').pop()
+  console.log('Extracted post ID:', postId)
+
+  // Validate postId
+  if (!postId || postId === 'post' || postId === 'posts') {
+    console.error('Invalid post ID:', postId)
+    return
+  }
+
+  const { data, error } = await supabase
+    .from('posts')
+    .select(`
+      id, user_id, content, created_at,
+      profiles:user_id (username, display_name, avatar_url),
+      likes (user_id)
+    `)
+    .eq('id', postId)
+    .single()
+
+  if (error) {
+    console.error('Error loading post detail:', error)
+    container.innerHTML = '<div class="text-center text-muted py-8">Không tìm thấy bài viết</div>'
+    return
+  }
+
+  console.log('Post data loaded:', data)
+
+  // Add likes data for renderPost
+  const likesCount = data.likes?.length || 0
+  const postWithLikes = {
+    ...data,
+    likes_count: likesCount,
+    user_liked: false // Will be updated by like functionality
+  }
+
+  container.innerHTML = renderPost(postWithLikes)
+  console.log('Post detail rendered successfully')
+}
+
+export async function loadComments() {
+  const list = $('#comments')
+  if (!list) {
+    console.error('Comments container not found')
+    return
+  }
+
+  const postId = window.location.pathname.split('/').pop()
+  console.log('Loading comments for post ID:', postId)
+
+  // Simple query without relationship - get comments first
+  const { data: comments, error } = await supabase
+    .from('comments')
+    .select('id, content, created_at, user_id')
+    .eq('post_id', postId)
+    .order('created_at', { ascending: true })
+
+  if (error) {
+    console.error('Error loading comments:', error)
+    list.innerHTML = '<p class="text-center text-muted py-4">Không thể tải bình luận</p>'
+    return
+  }
+
+  console.log('Comments loaded:', comments)
+
+  if (!comments || comments.length === 0) {
+    list.innerHTML = '<p class="text-center text-muted py-4">Chưa có bình luận nào</p>'
+    return
+  }
+
+  // Get unique user IDs
+  const userIds = [...new Set(comments.map(c => c.user_id))]
+  console.log('Loading profiles for users:', userIds)
+
+  // Get profiles separately
+  const { data: profiles, error: profileError } = await supabase
+    .from('profiles')
+    .select('id, username, display_name, avatar_url')
+    .in('id', userIds)
+
+  if (profileError) {
+    console.error('Error loading profiles:', profileError)
+  }
+
+  console.log('Profiles loaded:', profiles)
+
+  // Merge profiles with comments
+  const commentsWithProfiles = comments.map(comment => ({
+    ...comment,
+    profiles: profiles?.find(p => p.id === comment.user_id) || {
+      username: 'Unknown',
+      display_name: 'Unknown User',
+      avatar_url: null
+    }
+  }))
+
+  renderComments(list, commentsWithProfiles)
+}
+
+function renderComments(container, comments) {
+  if (!comments || comments.length === 0) {
+    container.innerHTML = '<p class="text-center text-muted py-8">Chưa có bình luận nào</p>'
+    return
+  }
+
+  container.innerHTML = comments.map(c => `
+    <div class="bg-surface rounded-lg p-3 border border-default hover:bg-surface-hover transition-colors">
+      <div class="flex items-start gap-3">
+        <img class="w-8 h-8 rounded-full border border-default shrink-0"
+             src="${c.profiles?.avatar_url ?? '/images/default-avatar.webp'}"
+             alt="Avatar">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between gap-2 mb-1">
+            <span class="text-sm font-medium text-primary truncate">
+              ${c.profiles?.display_name ?? c.profiles?.username ?? 'User'}
+            </span>
+            <span class="text-xs text-muted shrink-0">
+              ${new Date(c.created_at).toLocaleDateString('vi-VN', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
+            </span>
+          </div>
+          <p class="text-sm text-primary leading-relaxed whitespace-pre-line break-words">${c.content}</p>
+        </div>
+      </div>
+    </div>
+  `).join('')
+}
+
+export async function initCommentComposer() {
+  const btn = $('#commentBtn')
+  const input = $('#commentInput')
+
+  console.log('Initializing comment composer...')
+  console.log('Button found:', !!btn)
+  console.log('Input found:', !!input)
+
+  if (!btn || !input) {
+    console.error('Comment composer elements not found - Button:', !!btn, 'Input:', !!input)
+    return
+  }
+
+  const handleComment = async () => {
+    console.log('Handling comment submission...')
+
+    const text = input.value.trim()
+    console.log('Comment text:', text)
+
+    if (!text) {
+      console.log('Empty comment, aborting')
+      return
+    }
+
+    console.log('Getting current user...')
+    const { data: { user } } = await supabase.auth.getUser()
+    console.log('User:', user?.email)
+
+    if (!user) {
+      console.log('No user found, redirecting to login')
+      return location.href = "/login"
+    }
+
+    const postId = window.location.pathname.split('/').pop()
+    console.log('Post ID:', postId)
+
+    console.log('Inserting comment...')
+    const { data, error } = await supabase.from('comments').insert([{
+      post_id: postId,
+      user_id: user.id,
+      content: text
+    }])
+
+    if (error) {
+      console.error('Error posting comment:', error)
+      return
+    }
+
+    console.log('Comment posted successfully:', data)
+    input.value = ''
+    loadComments()
+  }
+
+  // Click handler
+  btn.onclick = handleComment
+
+  // Enter key handler (with Shift+Enter for multiline)
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault() // Prevent new line
+      console.log('Enter key pressed, submitting comment')
+      handleComment()
+    }
+    // Shift+Enter allows new line
+  })
+
+  console.log('Comment composer initialized successfully')
+}
