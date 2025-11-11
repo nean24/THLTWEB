@@ -56,7 +56,7 @@ export function renderPost(post) {
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
           </svg>
-          <span class="font-medium">Bình luận</span>
+          <span class="font-medium">${post.comments_count || 0}</span>
         </a>
       </div>
     </div>
@@ -79,7 +79,8 @@ export async function loadFeed() {
     .select(`
       id, user_id, content, created_at,
       profiles:user_id (username, display_name, avatar_url),
-      likes (user_id)
+      likes (user_id),
+      comments (id)
     `)
     .order('created_at', { ascending: false })
 
@@ -88,24 +89,27 @@ export async function loadFeed() {
     return
   }
 
-  // Add likes count and user's like status to each post
-  const postsWithLikes = data.map(post => {
+  // Add likes count, comments count and user's like status to each post
+  const postsWithData = data.map(post => {
     const likes = post.likes || []
+    const comments = post.comments || []
     const likesCount = likes.length
+    const commentsCount = comments.length
     const userLiked = user ? likes.some(like => like.user_id === user.id) : false
 
     return {
       ...post,
       likes_count: likesCount,
+      comments_count: commentsCount,
       user_liked: userLiked
     }
   })
 
-  container.innerHTML = postsWithLikes.map(p => renderPost(p)).join('')
+  container.innerHTML = postsWithData.map(p => renderPost(p)).join('')
 
   // Update like button styles for posts the user has liked
   if (user) {
-    postsWithLikes.forEach(post => {
+    postsWithData.forEach(post => {
       if (post.user_liked) {
         const likeBtn = container.querySelector(`[data-post-id="${post.id}"]`)
         if (likeBtn) {

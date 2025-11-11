@@ -29,7 +29,8 @@ export async function loadPostDetail() {
     .select(`
       id, user_id, content, created_at,
       profiles:user_id (username, display_name, avatar_url),
-      likes (user_id)
+      likes (user_id),
+      comments (id)
     `)
     .eq('id', postId)
     .single()
@@ -42,15 +43,17 @@ export async function loadPostDetail() {
 
   console.log('Post data loaded:', data)
 
-  // Add likes data for renderPost
+  // Add likes and comments data for renderPost
   const likesCount = data.likes?.length || 0
-  const postWithLikes = {
+  const commentsCount = data.comments?.length || 0
+  const postWithData = {
     ...data,
     likes_count: likesCount,
+    comments_count: commentsCount,
     user_liked: false // Will be updated by like functionality
   }
 
-  container.innerHTML = renderPost(postWithLikes)
+  container.innerHTML = renderPost(postWithData)
   console.log('Post detail rendered successfully')
 }
 
@@ -139,7 +142,7 @@ function renderComments(container, comments) {
               })}
             </span>
           </div>
-          <p class="text-sm text-primary leading-relaxed whitespace-pre-line break-words">${c.content}</p>
+          <p class="text-sm text-primary leading-relaxed whitespace-pre-line">${c.content}</p>
         </div>
       </div>
     </div>
