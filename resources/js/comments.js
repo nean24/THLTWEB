@@ -5,19 +5,13 @@ import { toast } from './toast.js'
 const $ = sel => document.querySelector(sel)
 
 export async function loadPostDetail() {
-  console.log('=== DEBUG: loadPostDetail called ===')
-  console.log('Current URL:', window.location.href)
-  console.log('Pathname:', window.location.pathname)
-
   const container = $('#postDetail')
   if (!container) {
     console.error('Post detail container (#postDetail) not found')
     return
   }
-  console.log('Container found:', container)
 
   const postId = window.location.pathname.split('/').pop()
-  console.log('Extracted post ID:', postId)
 
   // Validate postId
   if (!postId || postId === 'post' || postId === 'posts') {
@@ -42,8 +36,6 @@ export async function loadPostDetail() {
     return
   }
 
-  console.log('Post data loaded:', data)
-
   // Add likes and comments data for renderPost
   const likesCount = data.likes?.length || 0
   const commentsCount = data.comments?.length || 0
@@ -55,7 +47,6 @@ export async function loadPostDetail() {
   }
 
   container.innerHTML = renderPost(postWithData)
-  console.log('Post detail rendered successfully')
 }
 
 export async function loadComments() {
@@ -66,7 +57,6 @@ export async function loadComments() {
   }
 
   const postId = window.location.pathname.split('/').pop()
-  console.log('Loading comments for post ID:', postId)
 
   // Simple query without relationship - get comments first
   const { data: comments, error } = await supabase
@@ -81,8 +71,6 @@ export async function loadComments() {
     return
   }
 
-  console.log('Comments loaded:', comments)
-
   if (!comments || comments.length === 0) {
     list.innerHTML = '<p class="text-center text-muted py-4">Chưa có bình luận nào</p>'
     return
@@ -90,7 +78,6 @@ export async function loadComments() {
 
   // Get unique user IDs
   const userIds = [...new Set(comments.map(c => c.user_id))]
-  console.log('Loading profiles for users:', userIds)
 
   // Get profiles separately
   const { data: profiles, error: profileError } = await supabase
@@ -101,8 +88,6 @@ export async function loadComments() {
   if (profileError) {
     console.error('Error loading profiles:', profileError)
   }
-
-  console.log('Profiles loaded:', profiles)
 
   // Merge profiles with comments
   const commentsWithProfiles = comments.map(comment => ({
@@ -154,33 +139,22 @@ export async function initCommentComposer() {
   const btn = $('#commentBtn')
   const input = $('#commentInput')
 
-  console.log('Initializing comment composer...')
-  console.log('Button found:', !!btn)
-  console.log('Input found:', !!input)
-
   if (!btn || !input) {
     console.error('Comment composer elements not found - Button:', !!btn, 'Input:', !!input)
     return
   }
 
   const handleComment = async () => {
-    console.log('Handling comment submission...')
-
     const text = input.value.trim()
-    console.log('Comment text:', text)
 
     if (!text) {
-      console.log('Empty comment, aborting')
       toast.warning("Vui lòng nhập nội dung bình luận 📝")
       return
     }
 
-    console.log('Getting current user...')
     const { data: { user } } = await supabase.auth.getUser()
-    console.log('User:', user?.email)
 
     if (!user) {
-      console.log('No user found, redirecting to login')
       toast.warning("Vui lòng đăng nhập để bình luận 🔐")
       setTimeout(() => {
         location.href = "/login"
@@ -189,14 +163,12 @@ export async function initCommentComposer() {
     }
 
     const postId = window.location.pathname.split('/').pop()
-    console.log('Post ID:', postId)
 
     // Disable button and show loading state
     btn.disabled = true
     const originalText = btn.textContent
     btn.textContent = 'Đang gửi...'
 
-    console.log('Inserting comment...')
     const { data, error } = await supabase.from('comments').insert([{
       post_id: postId,
       user_id: user.id,
@@ -213,7 +185,6 @@ export async function initCommentComposer() {
       return
     }
 
-    console.log('Comment posted successfully:', data)
     input.value = ''
     toast.success("Gửi bình luận thành công! 💬")
     loadComments()
@@ -226,11 +197,8 @@ export async function initCommentComposer() {
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault() // Prevent new line
-      console.log('Enter key pressed, submitting comment')
       handleComment()
     }
     // Shift+Enter allows new line
   })
-
-  console.log('Comment composer initialized successfully')
 }

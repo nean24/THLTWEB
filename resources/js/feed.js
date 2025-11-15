@@ -170,21 +170,24 @@ export function initComposer() {
 
 /*Init feed: Khởi tạo feed và load dữ liệu*/
 export function initFeed() {
-  console.log('Initializing feed...')
   loadFeed()
+  setTimeout(initLikeHandlers, 1000)
 }
 
 export function initLikeHandlers() {
   document.addEventListener('click', async (e) => {
-    if (!e.target.closest('.like-btn')) return
-
     const likeBtn = e.target.closest('.like-btn')
-    const postId = likeBtn.getAttribute('data-post-id') // Fixed: use getAttribute instead of dataset
+    if (!likeBtn) return
 
-    console.log('Like button clicked for post ID:', postId)
+    const postId = likeBtn.getAttribute('data-post-id')
+    if (!postId) {
+      toast.error("Lỗi: Không tìm thấy ID bài viết!")
+      return
+    }
 
     // Get current user
     const { data: { user } } = await supabase.auth.getUser()
+    
     if (!user) {
       toast.warning("Vui lòng đăng nhập để thích bài viết 🔐")
       setTimeout(() => location.href = "/login", 1500)
@@ -194,12 +197,19 @@ export function initLikeHandlers() {
     // Disable button during processing
     likeBtn.disabled = true
 
-    const { data: existingLike } = await supabase
+    const { data: existingLike, error: checkError } = await supabase
       .from('likes')
-      .select('id')
+      .select('user_id')
       .eq('post_id', postId)
       .eq('user_id', user.id)
       .single()
+
+    if (checkError && checkError.code !== 'PGRST116') {
+      console.error('Error checking existing like:', checkError)
+      toast.error("Lỗi khi kiểm tra trạng thái thích!")
+      likeBtn.disabled = false
+      return
+    }
 
     const heartIcon = likeBtn.querySelector('svg')
     const countSpan = likeBtn.querySelector('.like-count')
