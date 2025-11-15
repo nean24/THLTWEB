@@ -179,11 +179,20 @@ export function initLikeHandlers() {
     if (!e.target.closest('.like-btn')) return
 
     const likeBtn = e.target.closest('.like-btn')
-    const postId = likeBtn.dataset.postId
+    const postId = likeBtn.getAttribute('data-post-id') // Fixed: use getAttribute instead of dataset
+
+    console.log('Like button clicked for post ID:', postId)
 
     // Get current user
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return location.href = "/login"
+    if (!user) {
+      toast.warning("Vui lòng đăng nhập để thích bài viết 🔐")
+      setTimeout(() => location.href = "/login", 1500)
+      return
+    }
+
+    // Disable button during processing
+    likeBtn.disabled = true
 
     const { data: existingLike } = await supabase
       .from('likes')
@@ -197,24 +206,40 @@ export function initLikeHandlers() {
     let currentCount = parseInt(countSpan.textContent) || 0
 
     if (existingLike) {
-
-      await supabase
+      // Unlike
+      const { error } = await supabase
         .from('likes')
         .delete()
         .eq('post_id', postId)
         .eq('user_id', user.id)
 
-      heartIcon.setAttribute('fill', 'none')
-      likeBtn.classList.remove('text-red-500')
-      countSpan.textContent = Math.max(0, currentCount - 1)
+      if (!error) {
+        heartIcon.setAttribute('fill', 'none')
+        likeBtn.classList.remove('text-red-500')
+        countSpan.textContent = Math.max(0, currentCount - 1)
+        toast.success("Đã bỏ thích bài viết 💔")
+      } else {
+        console.error('Error unliking:', error)
+        toast.error("Có lỗi khi bỏ thích. Thử lại! 🌧")
+      }
     } else {
-      await supabase
+      // Like
+      const { error } = await supabase
         .from('likes')
         .insert({ post_id: postId, user_id: user.id })
 
-      heartIcon.setAttribute('fill', 'currentColor')
-      likeBtn.classList.add('text-red-500')
-      countSpan.textContent = currentCount + 1
+      if (!error) {
+        heartIcon.setAttribute('fill', 'currentColor')
+        likeBtn.classList.add('text-red-500')
+        countSpan.textContent = currentCount + 1
+        toast.success("Đã thích bài viết! ❤️")
+      } else {
+        console.error('Error liking:', error)
+        toast.error("Có lỗi khi thích bài viết. Thử lại! 🌧")
+      }
     }
+
+    // Re-enable button
+    likeBtn.disabled = false
   })
 }
