@@ -78,12 +78,36 @@ class FeedController extends Controller
 
         $data = $request->validate([
             'content' => ['required', 'string', 'max:500'],
+            'image' => ['nullable', 'image', 'max:5120'], // Max 5MB
         ]);
 
         $token = SupabaseSession::accessToken();
         $user = SupabaseSession::user();
 
         $client = SupabaseClient::fromConfig();
+        $imageUrls = null;
+
+        // Handle Image Upload
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $path = 'posts/' . $user['id'] . '/' . time() . '_' . $file->getClientOriginalName();
+
+            // Upload to 'images' bucket (ensure this bucket exists in Supabase and is public)
+            $upload = $client->uploadStorage(
+                'images',
+                $path,
+                file_get_contents($file->getRealPath()),
+                $file->getMimeType(),
+                $token
+            );
+
+            if (($upload['ok'] ?? false)) {
+                // Store as array since DB column might be JSONB or text[]
+                $imageUrls = [$upload['public_url']];
+            } else {
+                return back()->withInput()->with('flash_error', 'Không thể tải ảnh lên.');
+            }
+        }
 
         $res = $client->rest(
             'POST',
@@ -93,6 +117,7 @@ class FeedController extends Controller
             [
                 'user_id' => $user['id'] ?? null,
                 'content' => $data['content'],
+                'images' => $imageUrls, // Add images field
             ],
             [
                 'Prefer' => 'return=representation',

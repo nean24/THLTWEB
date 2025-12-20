@@ -39,6 +39,19 @@
           {{ $post['content'] ?? '' }}
         </p>
 
+        @if (!empty($post['images']))
+          <div class="mb-3">
+            @php($imgs = is_string($post['images']) ? json_decode($post['images'], true) : $post['images'])
+            @if(is_array($imgs))
+              @foreach($imgs as $img)
+                <img src="{{ $img }}" class="rounded-lg max-h-[500px] w-auto max-w-full mx-auto border border-default" alt="Post image">
+              @endforeach
+            @elseif(is_string($post['images']))
+               <img src="{{ $post['images'] }}" class="rounded-lg max-h-[500px] w-auto max-w-full mx-auto border border-default" alt="Post image">
+            @endif
+          </div>
+        @endif
+
         <div class="flex items-center px-1">
           <div class="flex items-center gap-6">
             <form method="POST" action="{{ route('posts.like', ['id' => $post['id']]) }}">

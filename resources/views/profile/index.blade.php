@@ -26,11 +26,11 @@
         <div class="relative">
           <img id="profileAvatar" class="w-20 h-20 md:w-32 md:h-32 rounded-full border-4 border-default object-cover"
                src="{{ $p['avatar_url'] ?? asset('images/default-avatar.webp') }}" alt="avatar">
-          <div class="absolute -bottom-1 -right-1 w-6 h-6 md:w-8 md:h-8 bg-button-primary rounded-full flex items-center justify-center border-3 md:border-4 border-surface">
+          <button id="editProfileBtn" type="button" class="absolute -bottom-1 -right-1 w-6 h-6 md:w-8 md:h-8 bg-button-primary rounded-full flex items-center justify-center border-3 md:border-4 border-surface hover:bg-button-primary-hover transition-colors cursor-pointer" title="Chỉnh sửa hồ sơ">
             <svg class="w-3 h-3 md:w-4 md:h-4 text-background" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
             </svg>
-          </div>
+          </button>
         </div>
       </div>
 
@@ -42,12 +42,6 @@
             <h1 id="profileDisplayName" class="text-xl md:text-3xl font-bold text-primary">{{ $p['display_name'] ?? $p['username'] ?? '...' }}</h1>
             <p id="profileUsername" class="text-sm md:text-base text-muted">{{ '@' }}{{ $p['username'] ?? '...' }}</p>
           </div>
-          <button id="editProfileBtn" type="button" class="mx-auto md:mx-0 px-3 py-2 bg-button-primary text-background rounded-lg hover:bg-button-primary-hover transition-colors text-xs md:text-sm font-medium flex items-center gap-2">
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-            </svg>
-            Chỉnh sửa
-          </button>
         </div>
 
         <!-- Bio -->
@@ -119,6 +113,19 @@
                 {{ $post['content'] ?? '' }}
               </p>
 
+              @if (!empty($post['images']))
+                <div class="mb-3">
+                  @php($imgs = is_string($post['images']) ? json_decode($post['images'], true) : $post['images'])
+                  @if(is_array($imgs))
+                    @foreach($imgs as $img)
+                      <img src="{{ $img }}" class="rounded-lg max-h-[500px] w-auto max-w-full mx-auto border border-default" alt="Post image" loading="lazy">
+                    @endforeach
+                  @elseif(is_string($post['images']))
+                     <img src="{{ $post['images'] }}" class="rounded-lg max-h-[500px] w-auto max-w-full mx-auto border border-default" alt="Post image" loading="lazy">
+                  @endif
+                </div>
+              @endif
+
               <div class="flex items-center px-1">
                 <div class="flex items-center gap-6">
                   <form method="POST" action="{{ route('posts.like', ['id' => $post['id']]) }}">
@@ -168,6 +175,19 @@
                 {{ $post['content'] ?? '' }}
               </p>
 
+              @if (!empty($post['images']))
+                <div class="mb-3">
+                  @php($imgs = is_string($post['images']) ? json_decode($post['images'], true) : $post['images'])
+                  @if(is_array($imgs))
+                    @foreach($imgs as $img)
+                      <img src="{{ $img }}" class="rounded-lg max-h-[500px] w-auto max-w-full mx-auto border border-default" alt="Post image" loading="lazy">
+                    @endforeach
+                  @elseif(is_string($post['images']))
+                     <img src="{{ $post['images'] }}" class="rounded-lg max-h-[500px] w-auto max-w-full mx-auto border border-default" alt="Post image" loading="lazy">
+                  @endif
+                </div>
+              @endif
+
               <div class="flex items-center px-1">
                 <div class="flex items-center gap-6">
                   <form method="POST" action="{{ route('posts.like', ['id' => $post['id']]) }}">
@@ -213,7 +233,7 @@
       </div>
 
       <!-- Modal Form -->
-      <form id="editProfileForm" method="POST" action="{{ route('profile.update') }}" class="space-y-3 md:space-y-4">
+      <form id="editProfileForm" method="POST" action="{{ route('profile.update') }}" class="space-y-3 md:space-y-4" enctype="multipart/form-data">
         @csrf
 
         <div>
@@ -232,8 +252,12 @@
         </div>
 
         <div>
-          <label class="form-label text-sm">URL Avatar</label>
-          <input type="url" name="avatar_url" id="editAvatarUrl" value="{{ old('avatar_url', $p['avatar_url'] ?? '') }}" class="form-input text-sm" placeholder="https://example.com/avatar.jpg">
+          <label class="form-label text-sm">Avatar</label>
+          <div class="flex items-center gap-3">
+            <img id="avatarPreview" src="{{ $p['avatar_url'] ?? asset('images/default-avatar.webp') }}" class="w-12 h-12 rounded-full border border-default object-cover">
+            <input type="file" name="avatar_file" id="avatarInput" class="text-sm text-muted file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-surface-hover file:text-primary hover:file:bg-surface transition-colors" accept="image/*">
+          </div>
+          <input type="hidden" name="avatar_url" id="editAvatarUrl" value="{{ old('avatar_url', $p['avatar_url'] ?? '') }}">
         </div>
 
         <!-- Modal Buttons -->
@@ -250,3 +274,23 @@
   </div>
 </div>
 @endsection
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const avatarInput = document.getElementById('avatarInput');
+    const avatarPreview = document.getElementById('avatarPreview');
+
+    if (avatarInput && avatarPreview) {
+      avatarInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            avatarPreview.src = e.target.result;
+          }
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+  });
+</script>

@@ -190,4 +190,43 @@ class SupabaseClient
             'raw' => $res->body(),
         ];
     }
+
+    /**
+     * Upload file to Supabase Storage.
+     */
+    public function uploadStorage(string $bucket, string $path, string $content, string $mimeType, ?string $accessToken = null): array
+    {
+        // Storage API: POST /storage/v1/object/{bucket}/{path}
+        $urlPath = "/storage/v1/object/$bucket/$path";
+
+        // Use Http::baseUrl...->post() returns Response, not Promise.
+        // The previous error was likely due to static analysis confusion or incorrect return type assumption.
+        // We ensure we are using the same http helper which returns PendingRequest.
+
+        $res = $this->http($accessToken)
+            ->withHeaders([
+                'Content-Type' => $mimeType,
+                'x-upsert' => 'true',
+            ])
+            ->withBody($content, $mimeType)
+            ->post($urlPath);
+
+        if (!$res->successful()) {
+            return [
+                'ok' => false,
+                'status' => $res->status(),
+                'error' => $res->json(),
+            ];
+        }
+
+        // Construct Public URL
+        // Format: {supabase_url}/storage/v1/object/public/{bucket}/{path}
+        $publicUrl = rtrim($this->url, '/') . "/storage/v1/object/public/$bucket/$path";
+
+        return [
+            'ok' => true,
+            'path' => $path,
+            'public_url' => $publicUrl,
+        ];
+    }
 }
