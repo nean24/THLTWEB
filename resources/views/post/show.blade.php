@@ -16,7 +16,6 @@
     </div>
   @endif
 
-  {{-- Bài viết --}}
   <div>
     @if (!empty($post))
       @php($profile = $post['profiles'] ?? null)
@@ -78,7 +77,6 @@
     @endif
   </div>
 
-  {{-- Danh sách bình luận --}}
   <div>
     <h3 class="text-sm font-semibold text-muted mb-4">Bình luận</h3>
     <div class="space-y-3 mb-6">
@@ -108,7 +106,6 @@
     </div>
   </div>
 
-  {{-- Composer bình luận --}}
   <div class="bg-surface rounded-lg p-4 border border-default">
     <form method="POST" action="{{ route('posts.comment', ['id' => request()->route('id')]) }}" class="space-y-3">
       @csrf

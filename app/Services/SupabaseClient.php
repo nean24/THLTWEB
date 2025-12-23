@@ -42,9 +42,6 @@ class SupabaseClient
             ->withHeaders($this->baseHeaders($accessToken));
     }
 
-    /**
-     * Sign in user using Supabase Auth (GoTrue).
-     */
     public function signInWithPassword(string $email, string $password): array
     {
         $res = $this->http()
@@ -73,9 +70,6 @@ class SupabaseClient
         ];
     }
 
-    /**
-     * Register user using Supabase Auth (GoTrue).
-     */
     public function signUp(string $email, string $password): array
     {
         $res = $this->http()->post('/auth/v1/signup', [
@@ -96,10 +90,7 @@ class SupabaseClient
             'data' => $res->json(),
         ];
     }
-
-    /**
-     * Refresh access token using refresh_token.
-     */
+    //Refresh token lại sau khi đăng nhập hay đăng kí
     public function refreshToken(string $refreshToken): array
     {
         $res = $this->http()
@@ -127,9 +118,7 @@ class SupabaseClient
         ];
     }
 
-    /**
-     * Sign out user (revoke refresh tokens).
-     */
+    //Bỏ token khi đăng xuất
     public function signOut(string $accessToken): array
     {
         $res = $this->http($accessToken)->post('/auth/v1/logout');
@@ -141,9 +130,7 @@ class SupabaseClient
         ];
     }
 
-    /**
-     * Get current user from access token.
-     */
+    //Lấy người dùng hiện tại từ token hiện tại
     public function getUser(string $accessToken): array
     {
         $res = $this->http($accessToken)->get('/auth/v1/user');
@@ -191,17 +178,9 @@ class SupabaseClient
         ];
     }
 
-    /**
-     * Upload file to Supabase Storage.
-     */
     public function uploadStorage(string $bucket, string $path, string $content, string $mimeType, ?string $accessToken = null): array
     {
-        // Storage API: POST /storage/v1/object/{bucket}/{path}
         $urlPath = "/storage/v1/object/$bucket/$path";
-
-        // Use Http::baseUrl...->post() returns Response, not Promise.
-        // The previous error was likely due to static analysis confusion or incorrect return type assumption.
-        // We ensure we are using the same http helper which returns PendingRequest.
 
         $res = $this->http($accessToken)
             ->withHeaders([
@@ -219,8 +198,6 @@ class SupabaseClient
             ];
         }
 
-        // Construct Public URL
-        // Format: {supabase_url}/storage/v1/object/public/{bucket}/{path}
         $publicUrl = rtrim($this->url, '/') . "/storage/v1/object/public/$bucket/$path";
 
         return [

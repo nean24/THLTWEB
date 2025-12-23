@@ -31,7 +31,7 @@ class OnboardingController extends Controller
 
         $client = SupabaseClient::fromConfig();
 
-        // Check username uniqueness (case-insensitive)
+        // Check xem tên username đã tồn tại chưa
         $exists = $client->rest('GET', 'profiles', $token, [
             'select' => 'id',
             'username' => 'ilike.' . $data['username'],

@@ -12,17 +12,16 @@ class EnsureSupabaseSession
 {
     public function handle(Request $request, Closure $next): Response
     {
-        // Quick signal for views: do we at least have a session cookie?
-        // (Useful for debugging when session payload isn't being persisted.)
+        // Check xem có cookie
         view()->share('hasSessionCookie', (bool) $request->cookies->get(config('session.cookie')));
 
-        // No session -> continue.
+        // Nếu khong có session thì kệ
         if (!SupabaseSession::isAuthenticated()) {
             view()->share('authUser', null);
             return $next($request);
         }
 
-        // Refresh token if needed.
+        // Refresh lại token nếu hết hạn
         if (SupabaseSession::isExpired()) {
             $refreshToken = SupabaseSession::refreshToken();
 
@@ -33,7 +32,7 @@ class EnsureSupabaseSession
                 if (($refreshed['ok'] ?? false) === true) {
                     SupabaseSession::put($refreshed);
                 } else {
-                    // Token invalid -> clear session.
+                    // Token lỗi thì xóa session
                     SupabaseSession::forget();
                 }
             } else {

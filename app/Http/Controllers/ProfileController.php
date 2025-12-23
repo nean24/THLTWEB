@@ -23,7 +23,7 @@ class ProfileController extends Controller
 
         $client = SupabaseClient::fromConfig();
 
-        // Profile
+        // Xử lý việc lấy thông tin profile
         $profileRes = $client->rest('GET', 'profiles', $token, [
             'select' => 'id,username,display_name,bio,avatar_url,created_at,onboarded',
             'id' => 'eq.' . $userId,
@@ -35,7 +35,7 @@ class ProfileController extends Controller
             $profile = $profileRes['data'][0];
         }
 
-        // My posts
+        // Xử lý lấy bài viết mà người dùng đã đăng
         $myPostsRes = $client->rest('GET', 'posts', $token, [
             'select' => 'id,user_id,content,images,like_count,comment_count,created_at,profiles:user_id(id,username,display_name,avatar_url)',
             'user_id' => 'eq.' . $userId,
@@ -43,7 +43,7 @@ class ProfileController extends Controller
         ]);
         $myPosts = (($myPostsRes['ok'] ?? false) && is_array($myPostsRes['data'])) ? $myPostsRes['data'] : [];
 
-        // Liked posts: get likes => join posts
+        // Xử lý lấy bài viết mà người dùng đã like
         $likedRes = $client->rest('GET', 'likes', $token, [
             'select' => 'post_id,created_at,posts:post_id(id,user_id,content,images,like_count,comment_count,created_at,profiles:user_id(id,username,display_name,avatar_url))',
             'user_id' => 'eq.' . $userId,
@@ -77,10 +77,9 @@ class ProfileController extends Controller
             'username' => ['required', 'string', 'max:24'],
             'bio' => ['nullable', 'string', 'max:200'],
             'avatar_url' => ['nullable', 'url', 'max:255'],
-            'avatar_file' => ['nullable', 'image', 'max:5120'], // Max 5MB
+            'avatar_file' => ['nullable', 'image', 'max:5120'],
         ]);
 
-        // Basic username validation (same spirit as old JS)
         if (!preg_match('/^[a-zA-Z0-9_]{3,24}$/', $data['username'])) {
             return back()->withInput()->with('flash_error', 'Username 3–24 ký tự, chỉ chữ/số/_');
         }
@@ -91,26 +90,24 @@ class ProfileController extends Controller
 
         $client = SupabaseClient::fromConfig();
 
-        // Handle Avatar Upload
+        // Xử lý upload avata
         $avatarUrl = $data['avatar_url'] ?? null;
         if ($request->hasFile('avatar_file')) {
             $file = $request->file('avatar_file');
             $filename = 'avatar_' . time() . '_' . $file->getClientOriginalName();
             $path = $userId . '/' . $filename;
 
-            // Read file content
+
             $content = file_get_contents($file->getRealPath());
             $mimeType = $file->getMimeType();
 
-            // Upload to Supabase Storage (bucket: 'avatars')
-            // Ensure you have a public bucket named 'avatars'
+            // Upload ảnh lên bucket Supabase
             $uploadRes = $client->uploadStorage('avatars', $path, $content, $mimeType, $token);
 
             if ($uploadRes['ok']) {
                 $avatarUrl = $uploadRes['public_url'];
             } else {
-                // Log error or handle it? For now, just flash error
-                // \Log::error('Avatar upload failed', $uploadRes);
+                //Trả về lỗi khi không upload được
                 return back()->withInput()->with('flash_error', 'Không thể tải ảnh đại diện lên.');
             }
         }

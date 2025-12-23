@@ -34,7 +34,7 @@ class PostController extends Controller
 
         $comments = (($commentsRes['ok'] ?? false) && is_array($commentsRes['data'])) ? $commentsRes['data'] : [];
 
-        // Manual join profiles to avoid PostgREST join issues
+
         if (!empty($comments)) {
             $userIds = array_unique(array_column($comments, 'user_id'));
             if (!empty($userIds)) {
@@ -56,7 +56,7 @@ class PostController extends Controller
             }
         }
 
-        // Override comment_count with actual fetched count to ensure consistency
+        // Override tính comment để tránh bị lỗi đồng bộ
         if ($post) {
             $post['comment_count'] = count($comments);
         }
@@ -81,7 +81,6 @@ class PostController extends Controller
         $user = SupabaseSession::user();
         $client = SupabaseClient::fromConfig();
 
-        // Insert comment. Denormalized counter (posts.comment_count) should be handled by DB trigger.
         $insert = $client->rest('POST', 'comments', $token, ['select' => 'id'], [
             'post_id' => $id,
             'user_id' => $user['id'] ?? null,
@@ -108,7 +107,7 @@ class PostController extends Controller
         $userId = $user['id'] ?? null;
         $client = SupabaseClient::fromConfig();
 
-        // Check existing like
+        // Check xem bài đã like chưa
         $existing = $client->rest('GET', 'likes', $token, [
             'select' => 'user_id,post_id',
             'user_id' => 'eq.' . $userId,
@@ -119,7 +118,7 @@ class PostController extends Controller
         $hasLike = (($existing['ok'] ?? false) && is_array($existing['data']) && count($existing['data']) > 0);
 
         if ($hasLike) {
-            // Unlike
+            // Bỏ like
             $del = $client->rest('DELETE', 'likes', $token, [
                 'user_id' => 'eq.' . $userId,
                 'post_id' => 'eq.' . $id,
@@ -129,7 +128,7 @@ class PostController extends Controller
                 return back()->with('flash_error', 'Không thể bỏ thích.');
             }
 
-            // Counter: should be handled by trigger.
+
             return back()->with('flash_success', 'Đã bỏ thích.');
         }
 
@@ -145,7 +144,6 @@ class PostController extends Controller
             return back()->with('flash_error', 'Không thể thả tim.');
         }
 
-        // Counter: should be handled by trigger.
         return back()->with('flash_success', 'Đã thả tim.');
     }
 }

@@ -73,7 +73,6 @@
 
   <h2 class="text-sm font-medium text-muted px-2">Bài viết mới</h2>
 
-  {{-- Feed (server-rendered) --}}
   <div class="space-y-4">
     @forelse(($posts ?? []) as $post)
       @php($profile = $post['profiles'] ?? null)
@@ -140,13 +139,13 @@
 
 </div>
 
-{{-- Onboarding Modal (server-driven) --}}
+
 @if (!empty($showOnboarding ?? null))
 <div id="onboardingModal" class="modal-backdrop fixed inset-0 z-50">
   <div class="modal relative mx-auto mt-24 w-[92%] max-w-md">
     <div class="p-6">
       <div class="flex items-start justify-between gap-3">
-        <h3 class="text-lg font-semibold text-primary mb-3">Chào mừng 🌸</h3>
+        <h3 class="text-lg font-semibold text-primary mb-3">Chào mừng</h3>
         <button id="ob_close" type="button" class="p-1.5 hover:bg-surface-hover rounded-full transition-colors">
           <svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -196,7 +195,6 @@
         if (file) {
           if (fileNameDisplay) fileNameDisplay.textContent = file.name;
 
-          // Show preview
           const reader = new FileReader();
           reader.onload = function(e) {
             if (imagePreview) imagePreview.src = e.target.result;

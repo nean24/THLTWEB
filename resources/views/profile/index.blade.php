@@ -18,10 +18,9 @@
 
   @php($p = $profile ?? null)
 
-  <!-- Profile Header -->
   <div class="profile-card p-4 md:p-8">
     <div class="flex flex-col items-center gap-6 md:flex-row md:items-start">
-      <!-- Avatar Section -->
+
       <div class="flex flex-col items-center gap-3">
         <div class="relative">
           <img id="profileAvatar" class="w-20 h-20 md:w-32 md:h-32 rounded-full border-4 border-default object-cover"
@@ -34,9 +33,8 @@
         </div>
       </div>
 
-      <!-- Profile Info -->
       <div class="flex-1 text-center md:text-left space-y-4 w-full">
-        <!-- Name and Edit Button -->
+
         <div class="space-y-3 md:space-y-0 md:flex md:items-start md:justify-between md:gap-4">
           <div class="flex flex-col gap-1">
             <h1 id="profileDisplayName" class="text-xl md:text-3xl font-bold text-primary">{{ $p['display_name'] ?? $p['username'] ?? '...' }}</h1>
@@ -44,12 +42,9 @@
           </div>
         </div>
 
-        <!-- Bio -->
         <p id="profileBio" class="text-sm md:text-base text-muted leading-relaxed">{{ $p['bio'] ?? 'Chưa có mô tả 🌸' }}</p>
 
-        <!-- Stats and Info in Grid -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 pt-4 border-t border-default">
-          <!-- Stats -->
           <div class="text-center p-2 rounded-lg bg-surface">
             <div class="text-base md:text-lg font-bold text-primary" id="postsCount">{{ is_array($myPosts ?? null) ? count($myPosts) : 0 }}</div>
             <div class="text-xs text-muted">Bài viết</div>
@@ -60,7 +55,6 @@
             <div class="text-xs text-muted">Lượt thích</div>
           </div>
 
-          <!-- Additional Info placeholders (keep UI) -->
           <div class="text-center p-2 rounded-lg bg-surface">
             <div class="text-xs md:text-sm text-muted truncate" id="profileWebsite" title="Website">—</div>
             <div class="text-xs text-muted">Website</div>
@@ -75,9 +69,9 @@
     </div>
   </div>
 
-  <!-- Posts Section -->
+
   <div class="card overflow-hidden">
-    <!-- Tab Navigation -->
+
     <div class="border-b border-default">
       <div class="flex">
         <button id="myPostsTab" class="tab-active flex-1 px-6 py-4 text-center font-medium border-b-2 tab-button" type="button">
@@ -89,7 +83,6 @@
       </div>
     </div>
 
-    <!-- Tab Content -->
     <div class="p-6">
       <div id="myPostsContent" class="tab-content">
         <div id="myPosts" class="space-y-4">
@@ -218,11 +211,10 @@
   </div>
 </div>
 
-<!-- Edit Profile Modal -->
 <div id="editProfileModal" class="modal-backdrop fixed inset-0 hidden items-center justify-center z-50 p-4">
   <div class="modal max-w-md w-full max-h-[90vh] overflow-y-auto mx-4">
     <div class="p-4 md:p-6">
-      <!-- Modal Header -->
+
       <div class="flex items-center justify-between mb-4 md:mb-6">
         <h2 class="text-lg md:text-xl font-bold text-primary">Chỉnh sửa hồ sơ</h2>
         <button id="closeModalBtn" type="button" class="p-1.5 hover:bg-surface-hover rounded-full transition-colors">
@@ -232,7 +224,6 @@
         </button>
       </div>
 
-      <!-- Modal Form -->
       <form id="editProfileForm" method="POST" action="{{ route('profile.update') }}" class="space-y-3 md:space-y-4" enctype="multipart/form-data">
         @csrf
 

@@ -37,7 +37,6 @@ class AuthController extends Controller
                 ?? data_get($res, 'error.message');
 
             if (is_string($errMsg) && $errMsg !== '') {
-                // Common Supabase case: email confirmation required
                 if (str_contains(strtolower($errMsg), 'email') && str_contains(strtolower($errMsg), 'confirm')) {
                     $msg = 'Email chưa được xác minh. Vui lòng kiểm tra email để xác minh hoặc tắt Email Confirm trong Supabase Auth.';
                 } else {
@@ -52,12 +51,10 @@ class AuthController extends Controller
                 ->with('flash_error', $msg);
         }
 
-        // Ensure a new session is issued so the browser receives the session cookie.
         $request->session()->regenerate();
 
         SupabaseSession::put($res);
 
-        // Make sure the handler persists the session before redirect.
         $request->session()->save();
 
         return redirect()->route('home')->with('flash_success', 'Đăng nhập thành công.');
@@ -78,7 +75,6 @@ class AuthController extends Controller
             return back()->withInput($request->only('email'))->with('flash_error', 'Đăng ký thất bại.');
         }
 
-        // Supabase may require email confirmation.
         return redirect()->route('login')->with('flash_success', 'Đăng ký thành công. Vui lòng đăng nhập.');
     }
 
