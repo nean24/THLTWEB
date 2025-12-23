@@ -3,6 +3,8 @@
 
 Dự án này là một ứng dụng mạng xã hội đơn giản được xây dựng bằng Laravel 12 kết hợp với Supabase đóng vai trò là Backend-as-a-Service
 
+Nếu muốn trải nghiệm ứng dụng thì người dùng có thể vào website : **www.convey.ink** để trải nghiệm.
+
 ## 1. Yêu cầu hệ thống
 
 Trước khi bắt đầu, hãy đảm bảo máy tính đã cài đặt:
