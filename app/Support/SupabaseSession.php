@@ -10,11 +10,9 @@ class SupabaseSession
 
     public static function put(array $session): void
     {
-        // Normalise and persist what we need.
         $expiresIn = (int) ($session['expires_in'] ?? 0);
 
-        // Supabase returns a large user payload; storing it in a cookie-based session
-        // easily exceeds the 4096-byte Set-Cookie limit.
+        // Phải sử dụng token rút gọn thay vì cookie do bị trình duyệt giới hạn kích thước mỗi coookie là 4KB
         $user = $session['user'] ?? null;
         $userSlim = null;
         if (is_array($user)) {
